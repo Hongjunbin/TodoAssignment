@@ -5,6 +5,7 @@ import com.sparta.todo.dto.TodoResponseDto;
 import com.sparta.todo.entity.Todo;
 import com.sparta.todo.repository.TodoRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +15,11 @@ public class TodoService {
 
     private final TodoRepository todoRepository;
 
+    @Autowired
     public TodoService(TodoRepository todoRepository) {
         this.todoRepository = todoRepository;
     }
 
-    @Transactional
     public TodoResponseDto saveTodo(TodoRequestDto requestDto) {
         Todo todo = new Todo(requestDto);
         Todo saveTodo = todoRepository.save(todo);
@@ -44,6 +45,12 @@ public class TodoService {
         todo.update(requestDto);
         TodoResponseDto responseDto = new TodoResponseDto(todo);
         return responseDto;
+    }
+
+    public Long deleteTodo(Long id, TodoRequestDto requestDto) {
+        Todo todo = findByTodoId(id);
+        todoRepository.delete(todo);
+        return id;
     }
 
     private Todo findByTodoId(Long id) {

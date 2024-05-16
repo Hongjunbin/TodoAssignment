@@ -3,6 +3,7 @@ package com.sparta.todo.controller;
 import com.sparta.todo.dto.TodoRequestDto;
 import com.sparta.todo.dto.TodoResponseDto;
 import com.sparta.todo.service.TodoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ public class TodoController {
 
     private final TodoService todoService;
 
+    @Autowired
     public TodoController(TodoService todoService) {
         this.todoService = todoService;
     }
@@ -60,6 +62,18 @@ public class TodoController {
     public ResponseEntity<Object> updateTodo(@PathVariable("id") Long id, @RequestBody TodoRequestDto requestDto) {
         TodoResponseDto responseDto = todoService.updateTodo(id, requestDto);
         return ResponseEntity.ok(responseDto);
+    }
+
+    /**
+     * 5단계 : 선택한 일정 삭제 API
+     * @param id : 삭제할 일정의 id
+     * @param requestDto : 삭제할 일정의 비밀번호
+     * @return : 삭제된 일정의 id
+     */
+    @DeleteMapping("/todo/{id}")
+    public ResponseEntity<Object> deleteTodo(@PathVariable("id") Long id, @RequestBody TodoRequestDto requestDto) {
+        Long deleteId = todoService.deleteTodo(id, requestDto);
+        return ResponseEntity.ok(deleteId);
     }
 
 
