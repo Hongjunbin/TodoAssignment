@@ -50,5 +50,17 @@ public class TodoController {
         return ResponseEntity.ok(responseDto);
     }
 
+    /**
+     * 4단계 : 선택한 일정의 할일 제목, 할일 내용, 담당자 수정 API ( 조건 : 비밀번호 함께 전달 )
+     * @param id : 선택한 일정의 id
+     * @param requestDto : 수정할 제목, 내용, 담당자 정보
+     * @return : 수정된 일정의 정보 반환
+     */
+    @PutMapping("/todo/{id}")
+    public ResponseEntity<Object> updateTodo(@PathVariable("id") Long id, @RequestBody TodoRequestDto requestDto) {
+        TodoResponseDto responseDto = todoService.updateTodo(id, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
 
 }

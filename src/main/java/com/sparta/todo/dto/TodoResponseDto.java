@@ -12,7 +12,6 @@ public class TodoResponseDto {
     private String title;
     private String contents;
     private String manager;
-    private String password;
     private LocalDateTime createDate;
 
     public TodoResponseDto(Todo todo) {
@@ -20,7 +19,6 @@ public class TodoResponseDto {
         this.title = todo.getTitle();
         this.contents = todo.getContents();
         this.manager = todo.getManager();
-        this.password = todo.getPassword();
         this.createDate = todo.getCreateDate();
     }
 

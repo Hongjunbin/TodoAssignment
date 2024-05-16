@@ -8,7 +8,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TodoService {
@@ -28,7 +27,7 @@ public class TodoService {
     }
 
     public TodoResponseDto findTodo(Long id) {
-        Todo todo = todoRepository.findById(id).orElseThrow(NullPointerException::new);
+        Todo todo = findByTodoId(id);
         TodoResponseDto responseDto = new TodoResponseDto(todo);
         return responseDto;
     }
@@ -37,6 +36,18 @@ public class TodoService {
         List<TodoResponseDto> responseDto = todoRepository.findAllByOrderByCreateDateDesc()
                 .stream().map(TodoResponseDto::new).toList();
         return responseDto;
+    }
+
+    @Transactional
+    public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto) {
+        Todo todo = findByTodoId(id);
+        todo.update(requestDto);
+        TodoResponseDto responseDto = new TodoResponseDto(todo);
+        return responseDto;
+    }
+
+    private Todo findByTodoId(Long id) {
+        return todoRepository.findById(id).orElseThrow(NullPointerException::new);
     }
 
 }
