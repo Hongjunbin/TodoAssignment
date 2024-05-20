@@ -3,6 +3,8 @@ package com.sparta.todo.service;
 import com.sparta.todo.dto.TodoRequestDto;
 import com.sparta.todo.dto.TodoResponseDto;
 import com.sparta.todo.entity.Todo;
+import com.sparta.todo.exception.PasswordException;
+import com.sparta.todo.exception.SelectNullException;
 import com.sparta.todo.repository.TodoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ public class TodoService {
 
     private final TodoRepository todoRepository;
 
-    @Autowired
     public TodoService(TodoRepository todoRepository) {
         this.todoRepository = todoRepository;
     }
@@ -27,7 +28,7 @@ public class TodoService {
         return responseDto;
     }
 
-    public TodoResponseDto findTodo(Long id) {
+    public TodoResponseDto findTodo(Long id) throws SelectNullException {
         Todo todo = findByTodoId(id);
         TodoResponseDto responseDto = new TodoResponseDto(todo);
         return responseDto;
@@ -40,21 +41,28 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto) {
+    public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto) throws PasswordException, SelectNullException {
         Todo todo = findByTodoId(id);
-        todo.update(requestDto);
+        if(requestDto.getPassword().equals(todo.getPassword())) {
+            todo.update(requestDto);
+        } else {
+            throw new PasswordException("비밀번호가 일치하지 않습니다!");
+        }
         TodoResponseDto responseDto = new TodoResponseDto(todo);
         return responseDto;
     }
 
-    public Long deleteTodo(Long id, TodoRequestDto requestDto) {
+    public void deleteTodo(Long id, TodoRequestDto requestDto) throws PasswordException, SelectNullException {
         Todo todo = findByTodoId(id);
-        todoRepository.delete(todo);
-        return id;
+        if(requestDto.getPassword().equals(todo.getPassword())) {
+            todoRepository.delete(todo);
+        } else {
+            throw new PasswordException("비밀번호가 일치하지 않습니다!");
+        }
     }
 
-    private Todo findByTodoId(Long id) {
-        return todoRepository.findById(id).orElseThrow(NullPointerException::new);
+    private Todo findByTodoId(Long id) throws SelectNullException {
+        return todoRepository.findById(id).orElseThrow(SelectNullException::new);
     }
 
 }

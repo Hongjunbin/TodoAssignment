@@ -2,20 +2,23 @@ package com.sparta.todo.controller;
 
 import com.sparta.todo.dto.TodoRequestDto;
 import com.sparta.todo.dto.TodoResponseDto;
+import com.sparta.todo.entity.Todo;
+import com.sparta.todo.exception.PasswordException;
+import com.sparta.todo.exception.SelectNullException;
 import com.sparta.todo.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/todos")
 public class TodoController {
 
     private final TodoService todoService;
 
-    @Autowired
     public TodoController(TodoService todoService) {
         this.todoService = todoService;
     }
@@ -25,10 +28,10 @@ public class TodoController {
      * @param requestDto : 저장할 일정의 정보
      * @return : 저장된 일정 정보
      */
-    @PostMapping("/todo")
-    public ResponseEntity<Object> saveTodo(@RequestBody TodoRequestDto requestDto) {
+    @PostMapping
+    public ResponseEntity<TodoResponseDto> saveTodo(@RequestBody TodoRequestDto requestDto) {
         TodoResponseDto responseDto = todoService.saveTodo(requestDto);
-        return ResponseEntity.ok(responseDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     /**
@@ -36,20 +39,28 @@ public class TodoController {
      * @param id : 선택한 일정의 id
      * @return : 선택한 일정의 정보
      */
-    @GetMapping("/todo/{id}")
-    public ResponseEntity<Object> findTodo(@PathVariable("id") Long id) {
-        TodoResponseDto responseDto = todoService.findTodo(id);
-        return ResponseEntity.ok(responseDto);
+    @GetMapping("/{id}")
+    public ResponseEntity<TodoResponseDto> findTodo(@PathVariable("id") Long id) {
+        try {
+            TodoResponseDto responseDto = todoService.findTodo(id);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } catch(SelectNullException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
      * 3단계 : 등록된 일정 전체를 조회하는 API
      * @return : 등록된 모든 일정의 정보
      */
-    @GetMapping("/todo")
-    public ResponseEntity<Object> findAllTodo() {
-        List<TodoResponseDto> responseDto = todoService.findAllTodo();
-        return ResponseEntity.ok(responseDto);
+    @GetMapping
+    public ResponseEntity<List<TodoResponseDto>> findAllTodo() {
+        try {
+            List<TodoResponseDto> responseDto = todoService.findAllTodo();
+            return new ResponseEntity<>(responseDto, HttpStatus.NO_CONTENT);
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
@@ -58,10 +69,14 @@ public class TodoController {
      * @param requestDto : 수정할 제목, 내용, 담당자 정보
      * @return : 수정된 일정의 정보 반환
      */
-    @PutMapping("/todo/{id}")
-    public ResponseEntity<Object> updateTodo(@PathVariable("id") Long id, @RequestBody TodoRequestDto requestDto) {
-        TodoResponseDto responseDto = todoService.updateTodo(id, requestDto);
-        return ResponseEntity.ok(responseDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<TodoResponseDto> updateTodo(@PathVariable("id") Long id, @RequestBody TodoRequestDto requestDto) {
+        try {
+            TodoResponseDto responseDto = todoService.updateTodo(id, requestDto);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } catch(PasswordException | SelectNullException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
@@ -70,11 +85,15 @@ public class TodoController {
      * @param requestDto : 삭제할 일정의 비밀번호
      * @return : 삭제된 일정의 id
      */
-    @DeleteMapping("/todo/{id}")
-    public ResponseEntity<Object> deleteTodo(@PathVariable("id") Long id, @RequestBody TodoRequestDto requestDto) {
-        Long deleteId = todoService.deleteTodo(id, requestDto);
-        return ResponseEntity.ok(deleteId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteTodo(@PathVariable("id") Long id, @RequestBody TodoRequestDto requestDto) {
+        // 글로벌 익셉션 핸들러
+        try {
+            todoService.deleteTodo(id, requestDto);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch(PasswordException | SelectNullException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
-
 
 }
