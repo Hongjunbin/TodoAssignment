@@ -44,4 +44,21 @@ public class CommentService {
         comment.update(requestDto, todo);
         return new CommentResponseDto(comment);
     }
+
+    public void deleteComment(Long commentId, CommentUpdateRequestDto requestDto) {
+        if(!Objects.equals(commentId, requestDto.getCommentId())) {
+            throw new NotMatchException();
+        }
+        if(!(isTodo(requestDto) && isComment(commentId))) {
+            throw new DataNotFoundException("조회된 댓글 및 일정이 없습니다.");
+        }
+        commentRepository.deleteById(requestDto.getCommentId());
+    }
+
+    public boolean isTodo(CommentUpdateRequestDto requestDto) {
+        return todoRepository.findById(requestDto.getTodoId()).isPresent();
+    }
+    public boolean isComment(Long commentId) {
+        return commentRepository.findById(commentId).isPresent();
+    }
 }

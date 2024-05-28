@@ -26,6 +26,10 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "todo_id")
     private Todo todo;
 
+    public Comment(Todo todo) {
+        this.todo = todo;
+    }
+
     public Comment(CommentSaveRequestDto requestDto, Todo todo) {
         this.contents = requestDto.getContents();
         this.username = requestDto.getUsername();
