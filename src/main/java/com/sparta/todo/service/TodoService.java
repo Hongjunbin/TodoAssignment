@@ -3,11 +3,10 @@ package com.sparta.todo.service;
 import com.sparta.todo.dto.TodoRequestDto;
 import com.sparta.todo.dto.TodoResponseDto;
 import com.sparta.todo.entity.Todo;
+import com.sparta.todo.exception.DataNotFoundException;
 import com.sparta.todo.exception.PasswordException;
-import com.sparta.todo.exception.SelectNullException;
 import com.sparta.todo.repository.TodoRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class TodoService {
         return responseDto;
     }
 
-    public TodoResponseDto findTodo(Long id) throws SelectNullException {
+    public TodoResponseDto findTodo(Long id) throws DataNotFoundException {
         Todo todo = findByTodoId(id);
         TodoResponseDto responseDto = new TodoResponseDto(todo);
         return responseDto;
@@ -41,7 +40,7 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto) throws PasswordException, SelectNullException {
+    public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto) throws PasswordException, DataNotFoundException {
         Todo todo = findByTodoId(id);
         if(requestDto.getPassword().equals(todo.getPassword())) {
             todo.update(requestDto);
@@ -52,7 +51,7 @@ public class TodoService {
         return responseDto;
     }
 
-    public void deleteTodo(Long id, TodoRequestDto requestDto) throws PasswordException, SelectNullException {
+    public void deleteTodo(Long id, TodoRequestDto requestDto) throws PasswordException, DataNotFoundException {
         Todo todo = findByTodoId(id);
         if(requestDto.getPassword().equals(todo.getPassword())) {
             todoRepository.delete(todo);
@@ -61,8 +60,10 @@ public class TodoService {
         }
     }
 
-    private Todo findByTodoId(Long id) throws SelectNullException {
-        return todoRepository.findById(id).orElseThrow(SelectNullException::new);
+    private Todo findByTodoId(Long id) throws DataNotFoundException {
+        return todoRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("잘못됨")
+        );
     }
 
 }

@@ -1,0 +1,7 @@
+POST http://localhost:8087/api/comments/1
+Content-Type: application/json
+
+{
+  "contents" : "댓글 내용",
+  "username" : "username"
+}

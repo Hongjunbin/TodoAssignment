@@ -2,11 +2,9 @@ package com.sparta.todo.controller;
 
 import com.sparta.todo.dto.TodoRequestDto;
 import com.sparta.todo.dto.TodoResponseDto;
-import com.sparta.todo.entity.Todo;
+import com.sparta.todo.exception.DataNotFoundException;
 import com.sparta.todo.exception.PasswordException;
-import com.sparta.todo.exception.SelectNullException;
 import com.sparta.todo.service.TodoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +42,7 @@ public class TodoController {
         try {
             TodoResponseDto responseDto = todoService.findTodo(id);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } catch(SelectNullException e) {
+        } catch(DataNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -74,7 +72,7 @@ public class TodoController {
         try {
             TodoResponseDto responseDto = todoService.updateTodo(id, requestDto);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } catch(PasswordException | SelectNullException e) {
+        } catch(PasswordException | DataNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -91,7 +89,7 @@ public class TodoController {
         try {
             todoService.deleteTodo(id, requestDto);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch(PasswordException | SelectNullException e) {
+        } catch(PasswordException | DataNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
     }
