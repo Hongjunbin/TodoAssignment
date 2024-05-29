@@ -17,6 +17,11 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    @GetMapping
+    public ResponseEntity<String> test() {
+        return new ResponseEntity<>("test", HttpStatus.OK);
+    }
+
     /**
      * 2단계 : 댓글 등록
      * @param requestDto : todoId & 댓글 등록 정보
@@ -43,6 +48,12 @@ public class CommentController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    /**
+     * 4단계 : 댓글 삭제 ( 선택한 댓글 삭제 )
+     * @param commentId : 댓글 번호
+     * @param requestDto : 댓글 번호 및 게시글 번호
+     * @return : 댓글 삭제 성공 시 메시지 및 200 상태 코드 반환
+     */
     @DeleteMapping("/{commentId}")
     public ResponseEntity<String> deleteComment(
             @PathVariable Long commentId,
