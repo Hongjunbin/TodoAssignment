@@ -1,9 +1,7 @@
 package com.sparta.todo.entity;
 
-import com.sparta.todo.dto.LoginRequestDto;
 import com.sparta.todo.dto.SignupRequestDto;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
