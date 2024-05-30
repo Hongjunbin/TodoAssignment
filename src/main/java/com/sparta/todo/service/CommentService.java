@@ -35,13 +35,11 @@ public class CommentService {
         if(!Objects.equals(commentId, requestDto.getCommentId())) {
             throw new NotMatchException();
         }
-        Todo todo = todoRepository.findById(requestDto.getTodoId()).orElseThrow(
-                () -> new DataNotFoundException("조회된 일정이 없습니다.")
-        );
         Comment comment = commentRepository.findById(requestDto.getCommentId()).orElseThrow(
                 () -> new DataNotFoundException("조회된 댓글이 없습니다.")
         );
-        comment.update(requestDto, todo);
+        comment.update(requestDto);
+
         return new CommentResponseDto(comment);
     }
 

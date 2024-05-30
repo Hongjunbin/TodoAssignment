@@ -26,7 +26,7 @@ public class JwtAuthFilter implements Filter {
         if (StringUtils.hasText(url) && (url.startsWith("/api/comments"))) {
             if(!StringUtils.hasText(token)) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                httpServletResponse.getWriter().write("Not Token");
+                httpServletResponse.getWriter().write("not token get out");
                 return;
             }
         }

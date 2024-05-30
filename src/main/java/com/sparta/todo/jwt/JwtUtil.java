@@ -40,7 +40,8 @@ public class JwtUtil {
     // 토큰 생성
     public String createToken(String username, UserRoleEnum role) {
         Date date = new Date();
-
+        // header :
+        // payload : 발급일, 식별자값,
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username) // 사용자 식별자값(ID)
@@ -49,6 +50,8 @@ public class JwtUtil {
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
+        // 112233445566
+        // 123456
     }
     //response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
