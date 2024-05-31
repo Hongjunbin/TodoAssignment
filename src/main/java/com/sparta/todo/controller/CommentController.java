@@ -3,7 +3,9 @@ package com.sparta.todo.controller;
 import com.sparta.todo.dto.CommentResponseDto;
 import com.sparta.todo.dto.CommentSaveRequestDto;
 import com.sparta.todo.dto.CommentUpdateRequestDto;
+import com.sparta.todo.entity.User;
 import com.sparta.todo.service.CommentService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,9 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<String> test() {
+    public ResponseEntity<String> test(HttpServletRequest request) {
+        User user = (User) request.getAttribute("user");
+
         return new ResponseEntity<>("test", HttpStatus.OK);
     }
 
@@ -28,7 +32,8 @@ public class CommentController {
      * @return : 등록에 성공한 댓글 정보
      */
     @PostMapping
-    public ResponseEntity<CommentResponseDto> saveComment(@RequestBody @Valid CommentSaveRequestDto requestDto) {
+    public ResponseEntity<CommentResponseDto> saveComment(@RequestBody @Valid CommentSaveRequestDto requestDto, HttpServletRequest request) {
+        requestDto.setUser((User) request.getAttribute("user"));
         CommentResponseDto responseDto = commentService.saveComment(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

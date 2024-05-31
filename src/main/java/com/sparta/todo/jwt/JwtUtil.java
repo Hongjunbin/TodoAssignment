@@ -50,10 +50,7 @@ public class JwtUtil {
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
-        // 112233445566
-        // 123456
     }
-    //response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
     // JWT Cookie 에 저장
     public void addJwtToHeader(String token, HttpServletResponse res) {

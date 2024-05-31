@@ -5,6 +5,7 @@ import com.sparta.todo.dto.CommentSaveRequestDto;
 import com.sparta.todo.dto.CommentUpdateRequestDto;
 import com.sparta.todo.entity.Comment;
 import com.sparta.todo.entity.Todo;
+import com.sparta.todo.entity.User;
 import com.sparta.todo.exception.DataNotFoundException;
 import com.sparta.todo.exception.NotMatchException;
 import com.sparta.todo.repository.CommentRepository;
@@ -26,7 +27,7 @@ public class CommentService {
         Todo todo = todoRepository.findById(requestDto.getTodoId()).orElseThrow(
                 () -> new DataNotFoundException("조회된 일정이 없습니다.")
         );
-        Comment todoResponse = commentRepository.save(new Comment(requestDto, todo));
+        Comment todoResponse = commentRepository.save(new Comment(requestDto, todo, requestDto.getUser()));
         return new CommentResponseDto(todoResponse);
     }
 

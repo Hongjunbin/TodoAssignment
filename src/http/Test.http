@@ -1,7 +1,22 @@
-POST http://localhost:8087/api/comments/1
+###
+# Login
+POST http://localhost:8087/api/user/login
 Content-Type: application/json
 
 {
-  "contents" : "댓글 내용",
-  "username" : "username"
+  "username" : "junbin",
+  "password" : "abcd1234"
 }
+
+###
+# comment test
+POST http://localhost:8087/api/comments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdW5iaW4iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcxNzA4NjMzMiwiaWF0IjoxNzE3MDgyNzMyfQ.o1ZqSM1eSo7-HVhsE0SgnchKKvp2ewispqEELYZ6Lxw
+
+{
+  "todoId" : 1,
+  "contents" : "댓글1입니다."
+}
+
+
