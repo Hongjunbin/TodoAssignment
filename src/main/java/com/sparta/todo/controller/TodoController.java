@@ -83,9 +83,9 @@ public class TodoController {
      * @param requestDto : 삭제할 일정의 비밀번호
      * @return : 삭제된 일정의 id
      */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteTodo(@PathVariable("id") Long id, @RequestBody TodoRequestDto requestDto) {
-        // 글로벌 익셉션 핸들러
         try {
             todoService.deleteTodo(id, requestDto);
             return new ResponseEntity<>(HttpStatus.OK);
